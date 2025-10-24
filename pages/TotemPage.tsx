@@ -7,19 +7,24 @@ const TotemPage: React.FC = () => {
   const { generateTicket } = useTicketSystem();
   const [generatedTicket, setGeneratedTicket] = useState<Ticket | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleServiceClick = (service: Service) => {
+  const handleServiceClick = async (service: Service) => {
     if (service.subServices && service.subServices.length > 0) {
       setSelectedService(service);
     } else {
-      const newTicket = generateTicket(service.id);
+      setIsGenerating(true);
+      const newTicket = await generateTicket(service.id);
       setGeneratedTicket(newTicket);
+      setIsGenerating(false);
     }
   };
   
-  const handleSubServiceClick = (parentService: Service, subService: SubService) => {
-    const newTicket = generateTicket(parentService.id, subService);
+  const handleSubServiceClick = async (parentService: Service, subService: SubService) => {
+    setIsGenerating(true);
+    const newTicket = await generateTicket(parentService.id, subService);
     setGeneratedTicket(newTicket);
+    setIsGenerating(false);
   };
 
   const handleReset = () => {
@@ -30,6 +35,17 @@ const TotemPage: React.FC = () => {
   const handleBack = () => {
     setSelectedService(null);
   };
+
+  if (isGenerating) {
+    return (
+        <div className="min-h-[calc(100vh-64px)] bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
+            <div className="flex items-center space-x-4 text-2xl text-gray-600 dark:text-gray-300">
+                <i className="fa-solid fa-spinner fa-spin text-4xl"></i>
+                <span>Gerando sua senha...</span>
+            </div>
+        </div>
+    );
+  }
 
   if (generatedTicket) {
     return <GeneratedTicketView ticket={generatedTicket} onReset={handleReset} />;

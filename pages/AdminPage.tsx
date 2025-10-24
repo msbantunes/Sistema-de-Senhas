@@ -4,25 +4,30 @@ import { Ticket, ServiceId, ReportData } from '../types';
 import { SERVICES } from '../constants';
 
 const AdminPage: React.FC = () => {
-    const { tickets, callNextTicket, getReportData, resetSystem } = useTicketSystem();
+    const { tickets, calledTickets, callNextTicket, getReportData, resetSystem, isLoading } = useTicketSystem();
     const [deskNumber, setDeskNumber] = useState(1);
     const [reportData, setReportData] = useState<ReportData | null>(null);
     const [isLoadingReport, setIsLoadingReport] = useState(true);
+    const [isCalling, setIsCalling] = useState(false);
 
-    const handleCallNext = () => {
+    const handleCallNext = async () => {
         if (!deskNumber || deskNumber < 1) {
             alert('Por favor, insira um número de guichê válido.');
             return;
         }
-        const called = callNextTicket(deskNumber);
-        if (!called) {
+        setIsCalling(true);
+        try {
+            await callNextTicket(deskNumber);
+        } catch (error) {
             alert('Não há senhas para chamar.');
+        } finally {
+            setIsCalling(false);
         }
     };
 
-    const handleReset = () => {
-        if (window.confirm('Tem certeza que deseja reiniciar o sistema? Todas as senhas serão perdidas.')) {
-            resetSystem();
+    const handleReset = async () => {
+        if (window.confirm('Tem certeza que deseja reiniciar o sistema? Todas as senhas e contadores serão perdidos.')) {
+            await resetSystem();
         }
     }
     
@@ -31,12 +36,26 @@ const AdminPage: React.FC = () => {
         getReportData().then(data => {
             setReportData(data);
             setIsLoadingReport(false);
+        }).catch(err => {
+            console.error("Failed to load report data:", err);
+            setIsLoadingReport(false);
         });
-    }, [tickets, getReportData]);
+    }, [tickets, calledTickets, getReportData]);
 
     const waitingTicketsByService = (serviceId: ServiceId) => {
         return tickets.filter(t => t.service.id === serviceId);
     };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-[calc(100vh-64px)] flex items-center justify-center">
+                 <div className="flex items-center space-x-4 text-2xl text-gray-600 dark:text-gray-300">
+                    <i className="fa-solid fa-spinner fa-spin text-4xl"></i>
+                    <span>Carregando dados do sistema...</span>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="bg-gray-100 dark:bg-gray-900 min-h-[calc(100vh-64px)] p-4 sm:p-6 lg:p-8">
@@ -56,8 +75,13 @@ const AdminPage: React.FC = () => {
                             min="1"
                             className="w-24 p-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         />
-                        <button onClick={handleCallNext} className="bg-brand-600 hover:bg-brand-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 text-lg">
-                            <i className="fa-solid fa-bullhorn mr-2"></i> Chamar
+                        <button 
+                            onClick={handleCallNext} 
+                            disabled={isCalling}
+                            className="bg-brand-600 hover:bg-brand-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 text-lg disabled:bg-brand-400 disabled:cursor-not-allowed"
+                        >
+                            {isCalling ? <i className="fa-solid fa-spinner fa-spin mr-2"></i> : <i className="fa-solid fa-bullhorn mr-2"></i>}
+                             {isCalling ? 'Chamando...' : 'Chamar'}
                         </button>
                     </div>
                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
