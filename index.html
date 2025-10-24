@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Controle de Atendimento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+      /* Define default CSS variables for the theme before Tailwind and JS load */
+      :root {
+        --color-brand-50: #f0f9ff;
+        --color-brand-100: #e0f2fe;
+        --color-brand-200: #bae6fd;
+        --color-brand-300: #7dd3fc;
+        --color-brand-400: #38bdf8;
+        --color-brand-500: #0ea5e9;
+        --color-brand-600: #0284c7;
+        --color-brand-700: #0369a1;
+        --color-brand-800: #075985;
+        --color-brand-900: #0c4a6e;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: 'var(--color-brand-50)',
+                100: 'var(--color-brand-100)',
+                200: 'var(--color-brand-200)',
+                300: 'var(--color-brand-300)',
+                400: 'var(--color-brand-400)',
+                500: 'var(--color-brand-500)',
+                600: 'var(--color-brand-600)',
+                700: 'var(--color-brand-700)',
+                800: 'var(--color-brand-800)',
+                900: 'var(--color-brand-900)',
+              },
+            },
+            animation: {
+              'slide-in-fwd-center': 'slide-in-fwd-center 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+              'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+            },
+            keyframes: {
+              'slide-in-fwd-center': {
+                '0%': {
+                  transform: 'translateZ(-1400px)',
+                  opacity: '0',
+                },
+                '100%': {
+                  transform: 'translateZ(0)',
+                  opacity: '1',
+                },
+              },
+            },
+          },
+        },
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.4",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-100 dark:bg-gray-900">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

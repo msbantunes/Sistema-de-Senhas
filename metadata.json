@@ -1,0 +1,5 @@
+{
+  "name": "Sistema de Controle de Atendimento",
+  "description": "Um sistema completo para gerenciamento de senhas e atendimento, incluindo um totem para emissão de senhas, um painel de exibição em tempo real e um painel administrativo para operadores e gestores.",
+  "requestFramePermissions": []
+}
